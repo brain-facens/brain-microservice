@@ -40,7 +40,7 @@ async def register_client_user(model: RegisterModel):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {str(e)}")
     
-@router.get('/inference/{username}', dependencies=[Depends(JWTBearer())])
+@router.get('/inference/{username}')
 async def query_project(username: str):
     get_project = """
         SELECT contracted_project FROM client_accounts WHERE username = %s ALLOW FILTERING
@@ -57,9 +57,8 @@ async def query_project(username: str):
 
 @router.get('/inference/connect/{project_name}')
 async def connect_project(project_name: str):
-    projects_list = list_repository(github_personal_access_token)
-    if project_name in projects_list:
+    try:
         redirect_url = f"http://127.0.0.1:8000/projects/{project_name}"
         return responses.RedirectResponse(url=redirect_url)
-    else:
+    except:
         return {"message": f"project {project_name} not found!"}
