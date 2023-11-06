@@ -19,6 +19,9 @@ async def projects_root():
 
 @router.get('/emotion')
 async def run_emotion():
+    """
+    TODO: transformar o detect.py em endpoint real de API, fonte: https://stackoverflow.com/questions/70167811/how-to-load-custom-model-in-pytorch & https://github.com/WelkinU/yolov5-fastapi-demo
+    """
     os.system("cd ../brain-microservice/projects/emotion/scripts && python3 detect.py --source 0 --weights best4.onnx")
 
 @router.get('/helmet-detector')
