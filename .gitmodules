@@ -1,3 +1,6 @@
 [submodule "projects/html_presentation"]
 	path = projects/html_presentation
 	url = https://github.com/brain-facens/html_presentation
+[submodule "projects/delimited-area"]
+	path = projects/delimited-area
+	url = https://github.com/brain-facens/delimited-area

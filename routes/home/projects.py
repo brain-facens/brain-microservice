@@ -1,12 +1,7 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, responses
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 import os  
-from utils import projectsWriter
-
-html = projectsWriter("templates/template.html", "src/config.json")
-html.create("templates/index.html")
+from bs4 import BeautifulSoup
 
 # rota onde os projetos serão transformados em API e aqui alocadas as suas execuções
 
@@ -20,20 +15,27 @@ Projetos:
 
 router = APIRouter(prefix='/projects', tags=['projects'])
 
-templates = Jinja2Templates(directory="templates")
-router.mount("/static", StaticFiles(directory="static"), name="static")
-
-@router.get('/root', response_class=HTMLResponse)
-async def projects_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+@router.get('/interface')
+async def run_interface():
+    redirect_url = "http://127.0.0.1:5000/home"
+    try:
+        response = responses.RedirectResponse(url=redirect_url)
+        return response
+    except Exception as e:
+        return {"message": f"Exception: {str(e)}"}
 
 @router.get('/emotion')
 async def run_emotion():
-    """
-    TODO: transformar o detect.py em endpoint real de API, fonte: https://stackoverflow.com/questions/70167811/how-to-load-custom-model-in-pytorch & https://github.com/WelkinU/yolov5-fastapi-demo
-    """
-    os.system("cd ../brain-microservice/projects/emotion/scripts && python3 detect.py --source 0 --weights best4.onnx")
+    os.system("bash ../brain-microservice/scripts/emotion.sh")
 
-@router.get('/helmet-detector')
-async def run_helmet():
-    return {"message": "helmet detector"}
+@router.get('/ocr-notas')
+async def run_ocr_notas():
+    return {"message": "Hello from ocr-notas"}
+
+@router.get('/tumor-detector')
+async def run_tumor_detector():
+    return {"message": "Hello from tumor-detector"}
+
+@router.get('/area-delimitada')
+async def run_area_delimitada():
+    return {"message": "Hello from area delimitada"}
