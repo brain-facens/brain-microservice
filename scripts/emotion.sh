@@ -1,0 +1,1 @@
+python3 ~/projects/emotion/scripts/detect.py --source 0 --weights ~/projects/emotion/scripts/best4.onnx

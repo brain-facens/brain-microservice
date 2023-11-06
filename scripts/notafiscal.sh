@@ -1,0 +1,1 @@
+sudo docker run -it --rm --name OCR --privileged --net=host --env=NVIDIA_VISIBLE_DEVICES=all --env=NVIDIA_DRIVER_CAPABILITIES=all --env=DISPLAY --env=QT_X11_NO_MITSHM=1 -v /tmp/.X11-unix:/tmp/.X11-unix natavitorino/ocr_paddle:1.3 bash

@@ -1,21 +1,31 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 import os  
+from utils import projectsWriter
+
+html = projectsWriter("templates/template.html", "src/config.json")
+html.create("templates/index.html")
 
 # rota onde os projetos serão transformados em API e aqui alocadas as suas execuções
 
 """
 Projetos:
-    - Tumor
-    - Area delimitada
-    - OCR Notas
-    - emotion
+    - Tumor (docker)
+    - Area delimitada (pegar projeto no PCzao, dentro pasta YOLO)
+    - OCR Notas (docker)
+    - emotion (local)
 """
 
 router = APIRouter(prefix='/projects', tags=['projects'])
 
-@router.get('/root')
-async def projects_root():
-    return {"message": "Hello from projects root page"}
+templates = Jinja2Templates(directory="templates")
+router.mount("/static", StaticFiles(directory="static"), name="static")
+
+@router.get('/root', response_class=HTMLResponse)
+async def projects_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @router.get('/emotion')
 async def run_emotion():
