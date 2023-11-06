@@ -1,7 +1,5 @@
 from fastapi import APIRouter, responses
-from fastapi.responses import HTMLResponse
 import os  
-from bs4 import BeautifulSoup
 
 # rota onde os projetos serão transformados em API e aqui alocadas as suas execuções
 
@@ -17,14 +15,14 @@ router = APIRouter(prefix='/projects', tags=['projects'])
 
 @router.get('/interface')
 async def run_interface():
-    redirect_url = "http://127.0.0.1:5000/home"
+    redirect_url = "http://127.0.0.1:5000"
     try:
         response = responses.RedirectResponse(url=redirect_url)
         return response
     except Exception as e:
         return {"message": f"Exception: {str(e)}"}
 
-@router.get('/emotion')
+@router.post('/emotion')
 async def run_emotion():
     os.system("bash ../brain-microservice/scripts/emotion.sh")
 
