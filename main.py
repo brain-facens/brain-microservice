@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import developer, client, demo, admin
-from routes.home import projects, list, auth 
+from routes.home import projects, list, auth, front
 
 app = FastAPI()
 
@@ -21,3 +21,4 @@ app.include_router(demo.router)
 app.include_router(projects.router)
 app.include_router(list.router)
 app.include_router(auth.router)
+app.include_router(front.router)
