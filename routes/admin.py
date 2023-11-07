@@ -5,8 +5,9 @@ from cassandra.auth import PlainTextAuthProvider
 from dotenv import load_dotenv
 import os 
 from os.path import join, dirname 
-from schemas import admin, client, demo
+from datetime import date
 
+from schemas import admin, client, demo
 from auth.auth_handler import signJWT
 from auth.auth_bearer import JWTBearer
 
@@ -39,6 +40,25 @@ async def lost_token(model: admin.LoginUser):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password, try again!")
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{str(e)}")
+
+@router.post("/add_project", dependencies=[Depends(JWTBearer())])
+async def add_project(model: admin.AddProject):
+    now = date.today()
+    try:
+        check_user = """
+            SELECT username FROM admin_credential WHERE username = %s ALLOW FILTERING
+        """
+        user_result = session.execute(check_user, (model.username,))
+        if not user_result.one():
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"User not found")
+        add_query = f"""
+            INSERT INTO projects (name, date_created)
+            VALUES (%s, %s)
+        """
+        session.execute(add_query, (model.project_name, now))
+        return {"message": f"Project {model.project_name} created registered sucessfully!"}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {str(e)}")
 
 @router.post('/register', dependencies=[Depends(JWTBearer())])
 async def register_admin(model: admin.RegisterUser):
@@ -110,7 +130,7 @@ async def delete_demo_user(model: demo.DeleteModel):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Erro: {str(e)}")
     
-@router.delete('/admin/delete', dependencies=[Depends(JWTBearer())])
+@router.delete('/delete', dependencies=[Depends(JWTBearer())])
 async def delete_admin_user(model: admin.DeleteUser):
     try:
         check_user = """

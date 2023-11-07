@@ -14,6 +14,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {"message": "Nothing here. Try accessing <address>/docs"}
+
 app.include_router(admin.router)
 app.include_router(developer.router)
 app.include_router(client.router)

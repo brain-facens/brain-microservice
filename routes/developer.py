@@ -14,10 +14,6 @@ cache_dir = './cache'
 
 router = APIRouter(prefix='/dev', tags=['developer'])
 
-@router.get('/root')
-async def dev_root():
-    return {"message": "Hello from dev root"}
-
 @router.get('/github-login')
 async def github_login():
     return RedirectResponse(f'https://github.com/login/oauth/authorize?client_id={github_client_id}', status_code=302)

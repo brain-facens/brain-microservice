@@ -24,10 +24,6 @@ auth_provider = PlainTextAuthProvider(username=USERNAME, password=PASSWORD)
 cluster = Cluster(['127.0.0.1'], auth_provider=auth_provider)
 session = cluster.connect('brainmicroservice')
 
-@router.get('/root')
-async def client_root():
-    return {"message": "Hello from client root page"}
-
 @router.post('/register', dependencies=[Depends(JWTBearer())])
 async def register_client_user(model: RegisterModel):
     try:

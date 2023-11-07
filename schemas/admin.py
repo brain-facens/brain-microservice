@@ -10,3 +10,7 @@ class LoginUser(BaseModel):
 
 class DeleteUser(BaseModel):
     username: str 
+
+class AddProject(BaseModel):
+    username: str
+    project_name: str

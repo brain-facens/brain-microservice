@@ -1,1 +1,0 @@
-python3 ../projects/delimited-area/detect-stream.py
