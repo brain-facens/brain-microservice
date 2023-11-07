@@ -4,3 +4,6 @@
 [submodule "projects/delimited-area"]
 	path = projects/delimited-area
 	url = https://github.com/brain-facens/delimited-area
+[submodule "projects/FieldVision-AI"]
+	path = projects/FieldVision-AI
+	url = https://github.com/brain-facens/FieldVision-AI

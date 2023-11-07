@@ -6,7 +6,7 @@ import os
 """
 Projetos:
     - Tumor (docker)
-    - Area delimitada (pegar projeto no PCzao, dentro pasta YOLO)
+    - Area delimitada (local)
     - OCR Notas (docker)
     - emotion (local)
 """
@@ -24,9 +24,9 @@ async def run_emotion():
 async def run_ocr_notas():
     return {"message": "Hello from ocr-notas"}
 
-@router.get('/tumor-detector')
+@router.get('/brainTumorDetection')
 async def run_tumor_detector():
-    return {"message": "Hello from tumor-detector"}
+    os.system("bash ../brain-microservice/scripts/tumor.sh")
 
 @router.get('/area-delimitada')
 async def run_area_delimitada():
