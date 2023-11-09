@@ -4,6 +4,7 @@ from cassandra.auth import PlainTextAuthProvider
 import os 
 from os.path import join, dirname
 from dotenv import load_dotenv
+from auth.utils_func import clientLogin, demoLogin, adminLogin
 
 from schemas import client, demo, admin
 from auth.auth_bearer import JWTBearer
@@ -25,53 +26,25 @@ cluster = Cluster(['127.0.0.1'], auth_provider=auth_provider)
 session = cluster.connect('brainmicroservice')
 
 last_successfull_login = None
-
+    
 @router.post('/client/login')
 async def client_login(model: client.LoginModel):
     try:
-        query = f"""
-            SELECT password FROM client_accounts WHERE username = %s
-        """
-        result = session.execute(query, (model.username,))
-
-        stored_password = result.one()
-        if stored_password and model.password == stored_password.password:
-            return {"message": f"User {model.username} logged in successfully! \n token: {signJWT(model.username)}"}
-        else:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password, try again!")
+        return(clientLogin(model.username, model.password))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{str(e)}")
+        
     
 @router.post('/demo/login')
-async def client_login(model: demo.LoginModel):
+async def demo_login(model: demo.LoginModel):
     try:
-        query = f"""
-            SELECT password FROM demo_accounts WHERE username = %s
-        """
-        result = session.execute(query, (model.username,))
-
-        stored_password = result.one()
-        if stored_password and model.password == stored_password.password:
-            return {"message": f"Demo {model.username} logged in successfully! \n token: {signJWT(model.username)}"}
-        else:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password, try again!")
+        return(demoLogin(model.username, model.password))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{str(e)}")
     
 @router.post('/admin/login')
 async def admin_login(model: admin.LoginUser):
     try:
-        query = f"""
-            SELECT password FROM admin_credential WHERE username = %s
-        """
-        result = session.execute(query, (model.username,))
-
-        stored_password = result.one()
-        if stored_password and model.password == stored_password.password:
-            global last_successfull_login
-            last_successfull_login = model.username
-            return {"message": f"User {model.username} logged in successfully! \n token: {signJWT(model.username)}"}
-        else:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password, try again!")
+        return(adminLogin(model.username, model.password))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{str(e)}")
