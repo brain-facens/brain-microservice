@@ -6,7 +6,7 @@ class RegisterUser(BaseModel):
 
 class LoginUser(BaseModel):
     username: str 
-    password: str 
+    password: str
 
 class DeleteUser(BaseModel):
     username: str 
@@ -14,3 +14,8 @@ class DeleteUser(BaseModel):
 class AddProject(BaseModel):
     username: str
     project_name: str
+    url: str
+
+class DeleteProject(BaseModel):
+    username: str 
+    project_name: str 

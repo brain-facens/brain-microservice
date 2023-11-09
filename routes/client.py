@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 import os 
 from os.path import join, dirname
 from schemas.client import RegisterModel
-from utils import list_repository
 
 from auth.auth_bearer import JWTBearer
 

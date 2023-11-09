@@ -1,10 +1,4 @@
-
-
-- Enviar token via email cadastrado
-- Fazer funcionar os endpoints dos projetos
-- Criar sistema que cadastra o dispositivo do usuário, limitando os dispositivos que podem logar e usar o sistema (https://github.com/AutomationPanda/device-registry-fastapi)
-- Testar subir as aplicações em Lambda e ver se é viável / tirar métricas (https://www.youtube.com/watch?v=RGIM4JfsSk0&t=638s)
-- Criar mobile app (http://webcache.googleusercontent.com/search?q=cache:https://medium.com/fintechexplained/build-a-mobile-app-on-fast-api-service-bda313748662&sca_esv=579932655&strip=1&vwsrc=0)
-- Refatorar (https://medium.com/@chnarsimha986/fastapi-login-logout-changepassword-4c12e92d41e2)
-- Subir em produção 
+- Cadastrar novos projetos e cloná-los automaticamente
 - Mostrar os resultados
+- Interface usando algum framework Python
+- Dashboard com metricas

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Body, Depends
+from fastapi import APIRouter, HTTPException, status
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 import os 
@@ -14,6 +14,9 @@ load_dotenv(dotenv_path)
 
 USERNAME = os.getenv("USERNAME")
 PASSWORD = os.getenv("PASSWORD")
+github_client_id = os.getenv('github_client_id')
+github_client_secret = os.getenv('github_client_secret')
+github_personal_access_token = os.getenv('github_personal_access_token')
 
 router = APIRouter(prefix='/auth', tags=['auth'])
 

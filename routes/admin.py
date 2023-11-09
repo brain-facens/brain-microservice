@@ -6,10 +6,12 @@ from dotenv import load_dotenv
 import os 
 from os.path import join, dirname 
 from datetime import date
+import shutil
 
 from schemas import admin, client, demo
 from auth.auth_handler import signJWT
 from auth.auth_bearer import JWTBearer
+from utils import clone_repo
 
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
@@ -25,7 +27,7 @@ auth_provider = PlainTextAuthProvider(username=USERNAME, password=PASSWORD)
 cluster = Cluster(['127.0.0.1'], auth_provider=auth_provider)
 session = cluster.connect('brainmicroservice')
 
-@router.post('/lostToken', dependencies=[Depends(JWTBearer())])
+@router.post('/lostToken')
 async def lost_token(model: admin.LoginUser):
     try:
         query = f"""
@@ -52,10 +54,11 @@ async def add_project(model: admin.AddProject):
         if not user_result.one():
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"User not found")
         add_query = f"""
-            INSERT INTO projects (name, date_created)
-            VALUES (%s, %s)
+            INSERT INTO projects (name, date_created, url)
+            VALUES (%s, %s, %s)
         """
-        session.execute(add_query, (model.project_name, now))
+        clone_repo(model.project_name, model.url)
+        session.execute(add_query, (model.project_name, now, model.url))
         return {"message": f"Project {model.project_name} created registered sucessfully!"}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {str(e)}")
@@ -130,7 +133,7 @@ async def delete_demo_user(model: demo.DeleteModel):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Erro: {str(e)}")
     
-@router.delete('/delete', dependencies=[Depends(JWTBearer())])
+@router.delete('/delete_user', dependencies=[Depends(JWTBearer())])
 async def delete_admin_user(model: admin.DeleteUser):
     try:
         check_user = """
@@ -138,7 +141,7 @@ async def delete_admin_user(model: admin.DeleteUser):
         """
         user_result = session.execute(check_user, (model.username,))
         if not user_result.one():
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found")
+            raise HTTPException(status_code=status.HTTP_401_BAD_REQUEST, detail="User not found")
         delete_query = f"""
             DELETE FROM admin_credential WHERE username = %s
         """
@@ -146,3 +149,22 @@ async def delete_admin_user(model: admin.DeleteUser):
         return {"message": f"User {model.username} deleted successfully!"}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Erro: {str(e)}")
+    
+@router.delete('/delete_project', dependencies=[Depends(JWTBearer())])
+async def delete_project(model: admin.DeleteProject):
+    try:
+        check_user = """
+            SELECT username FROM admin_credential WHERE username = %s ALLOW FILTERING
+        """
+        user_result = session.execute(check_user, (model.username,))
+        if not user_result.one():
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+        delete_query = f"""
+            DELETE FROM projects WHERE name = %s 
+        """
+        path = f"projects/{model.project_name}"
+        shutil.rmtree(path)
+        session.execute(delete_query, (model.project_name,))
+        return {"message": f"Project {model.project_name} deleted successfully!"}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {str(e)}")
