@@ -1,4 +1,4 @@
-from fastapi import APIRouter,  HTTPException, status, Depends
+from fastapi import APIRouter,  HTTPException, status, Depends, responses
 from fastapi.security import OAuth2PasswordBearer
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
@@ -26,6 +26,15 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 auth_provider = PlainTextAuthProvider(username=USERNAME, password=PASSWORD)
 cluster = Cluster(['127.0.0.1'], auth_provider=auth_provider)
 session = cluster.connect('brainmicroservice')
+
+@router.get('/dashboard')
+async def connect_dashboard():
+    redirect_url = "https://www.apianalytics.dev/dashboard/885be5bc407e49d9b73c0d5f85086390"
+    try:
+        response = responses.RedirectResponse(url=redirect_url)
+        return response
+    except Exception as e:
+        return {"message": f"Exception: {str(e)}"}
 
 @router.post('/lostToken')
 async def lost_token(model: admin.LoginUser):
