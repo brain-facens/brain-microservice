@@ -7,8 +7,6 @@ from dotenv import load_dotenv
 from auth.utils_func import clientLogin, demoLogin, adminLogin
 
 from schemas import client, demo, admin
-from auth.auth_bearer import JWTBearer
-from auth.auth_handler import signJWT
 
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)

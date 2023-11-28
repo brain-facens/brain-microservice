@@ -8,8 +8,6 @@ import os
 from os.path import join, dirname
 from schemas.client import RegisterModel
 
-from auth.auth_bearer import JWTBearer
-
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 
@@ -23,7 +21,7 @@ auth_provider = PlainTextAuthProvider(username=USERNAME, password=PASSWORD)
 cluster = Cluster(['127.0.0.1'], auth_provider=auth_provider)
 session = cluster.connect('brainmicroservice')
 
-@router.post('/register', dependencies=[Depends(JWTBearer())])
+@router.post('/register')
 async def register_client_user(model: RegisterModel):
     try:
         query = f"""

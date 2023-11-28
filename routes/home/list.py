@@ -5,8 +5,7 @@ from dotenv import load_dotenv
 import os 
 from os.path import join, dirname 
 from utils import *
-
-from auth.auth_bearer import JWTBearer
+import requests
 
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
@@ -22,7 +21,7 @@ cluster = Cluster(['127.0.0.1'], auth_provider=auth_provider)
 
 session = cluster.connect('brainmicroservice')
 
-@router.get('/client/list_users', dependencies=[Depends(JWTBearer())])
+@router.get('/client/list_users')
 async def list_client_users():
     try:
         query = "SELECT username from client_accounts"
@@ -37,7 +36,7 @@ async def list_client_users():
     except Exception as e:
         return {"Error": str(e)}
     
-@router.get('/demo/list_users', dependencies=[Depends(JWTBearer())])
+@router.get('/demo/list_users')
 async def list_client_users():
     try:
         query = "SELECT username from demo_accounts"
@@ -51,7 +50,7 @@ async def list_client_users():
     except Exception as e:
         return {"Error": f"{str(e)}"}
     
-@router.get('/list_repository', dependencies=[Depends(JWTBearer())])
+@router.get('/list_repository')
 async def list_repo():
     session = requests.Session()
     session.headers.update({'Authorization': f'token {github_personal_access_token}'})

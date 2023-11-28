@@ -5,9 +5,6 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 
-from auth.auth_bearer import JWTBearer
-from auth.auth_handler import signJWT
-
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 USERNAME = os.getenv("USERNAME")
@@ -24,7 +21,7 @@ def clientLogin(username: str, password: str):
     result = session.execute(query, (username,))
     stored_password = result.one()
     if stored_password and password == stored_password.password:
-        return {"message": f"User {username} logged in successfully! Token: {signJWT(username)}"}
+        return {"message": f"User {username} logged in successfully!"}
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
     
@@ -35,7 +32,7 @@ def demoLogin(username: str, password: str):
     result = session.execute(query, (username,))
     stored_password = result.one()
     if stored_password and password == stored_password.password:
-        return {"message": f"Demo {username} logged in successfully! Token: {signJWT(username)}"}
+        return {"message": f"Demo {username} logged in successfully!"}
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
 
@@ -48,6 +45,6 @@ def adminLogin(username: str, password: str):
     if stored_password and password == stored_password.password:
         global last_successfull_login
         last_successfull_login = username 
-        return {"message": f"User {username} logged in sucessfully! Token: {signJWT(username)}"}
+        return {"message": f"User {username} logged in sucessfully!"}
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detial="Invalid username or password")
