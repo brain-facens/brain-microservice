@@ -13,17 +13,12 @@ load_dotenv(dotenv_path)
 
 USERNAME = os.getenv("USERNAME")
 PASSWORD = os.getenv("PASSWORD")
-github_client_id = os.getenv('github_client_id')
-github_client_secret = os.getenv('github_client_secret')
-github_personal_access_token = os.getenv('github_personal_access_token')
 
 router = APIRouter(prefix='/auth', tags=['auth'])
 
 auth_provider = PlainTextAuthProvider(username=USERNAME, password=PASSWORD)
 cluster = Cluster(['127.0.0.1'], auth_provider=auth_provider)
 session = cluster.connect('brainmicroservice')
-
-last_successfull_login = None
     
 @router.post('/client/login')
 async def client_login(model: client.LoginModel):
