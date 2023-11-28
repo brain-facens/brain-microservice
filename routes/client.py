@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, responses, Depends 
+from fastapi import APIRouter, HTTPException, status, responses
 from cassandra import ConsistencyLevel
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
@@ -6,7 +6,10 @@ from cassandra.query import SimpleStatement
 from dotenv import load_dotenv
 import os 
 from os.path import join, dirname
+from email_validator import EmailNotValidError
+
 from schemas.client import RegisterModel
+from utils import is_valid_email
 
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
@@ -28,6 +31,8 @@ async def register_client_user(model: RegisterModel):
             INSERT INTO client_accounts (username, email, password, contracted_project, company)
             VALUES (%s, %s, %s, %s, %s)
         """
+        if not is_valid_email(model.email):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{str(EmailNotValidError)}")
         session.execute(query, (model.username, model.email, model.password, model.contracted_project, model.company))
         return {"message": f"User {model.username} created successfully!"}
     except Exception as e:

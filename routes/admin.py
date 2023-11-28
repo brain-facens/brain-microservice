@@ -66,18 +66,6 @@ async def register_admin(model: admin.RegisterUser):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {str(e)}")
     
-@router.post('/client/register')
-async def register_client_user(model: client.RegisterModel):
-    try:
-        query = f"""
-            INSERT INTO client_accounts (username, email, password, contracted_project, company)
-            VALUES (%s, %s, %s, %s, %s)
-        """
-        session.execute(query, (model.username, model.email, model.password, model.contracted_project, model.company))
-        return {"message": f"User {model.username} created successfully!"}
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {str(e)}")
-    
 @router.post('/demo/register')
 async def register_demo_user(model: demo.RegisterModel):
     try: 
