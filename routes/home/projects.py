@@ -5,12 +5,6 @@ import os
 
 router = APIRouter(prefix='/projects', tags=['projects'])
 
-@router.get('/interface')
-async def connect_interface():
-    redirect_url = "http://127.0.0.1:5000"
-    response = responses.RedirectResponse(url=redirect_url)
-    return response
-
 @router.get('/emotion')
 async def run_emotion():
     os.system("bash ../brain-microservice/scripts/emotion.sh")

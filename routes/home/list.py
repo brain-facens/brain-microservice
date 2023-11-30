@@ -64,17 +64,3 @@ async def list_repo():
         return repositories_info
     else:
         return []
-    
-@router.get('/list_projects')
-async def list_projects():
-    try:
-        query = "SELECT name from projects"
-        result = session.execute(query)
-
-        projects = []
-        for row in result:
-            path_projects = row[0]
-            projects.append(path_projects)
-        return {"Projects": projects}
-    except Exception as e:
-        return {"Error": f"{str(e)}"}
