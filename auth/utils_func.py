@@ -43,8 +43,6 @@ def adminLogin(username: str, password: str):
     result = session.execute(query, (username,))
     stored_password = result.one()
     if stored_password and password == stored_password.password:
-        global last_successfull_login
-        last_successfull_login = username 
         return {"message": f"User {username} logged in sucessfully!"}
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
