@@ -28,7 +28,7 @@ limiter = Limiter(key_func=get_remote_address)
 @limiter.limit("5/minute")
 async def client_login(model: client.LoginModel, request: Request):
     try:
-        return(clientLogin(model.username, model.password))
+        return(clientLogin(model.username, model.password, request))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=f"{str(e)}")
         
@@ -36,7 +36,7 @@ async def client_login(model: client.LoginModel, request: Request):
 @limiter.limit("5/minute")
 async def demo_login(model: demo.LoginModel, request: Request):
     try:
-        return(demoLogin(model.username, model.password))
+        return(demoLogin(model.username, model.password, request))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=f"{str(e)}")
     
@@ -44,6 +44,6 @@ async def demo_login(model: demo.LoginModel, request: Request):
 @limiter.limit("5/minute")
 async def admin_login(model: admin.LoginUser, request: Request):
     try:
-        return(adminLogin(model.username, model.password))
+        return(adminLogin(model.username, model.passwordm, request))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=f"{str(e)}")

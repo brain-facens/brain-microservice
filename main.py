@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 import os
 from os.path import join, dirname
@@ -37,8 +38,12 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 @app.get("/")
 async def root(request: Request):
     client_ip = request.client.host
-    logger.info(f"Endereço IP: {client_ip}: Requisição recebida na rota /")
-    return {"message": "Nothing here. Try accessing <address>/docs"}
+
+    response_content = {"message": "Nothing here. Try accessing <address>/docs"}
+    response = JSONResponse(content=response_content, status_code=200)
+    status_code = response.status_code
+    logger.info(f"STATUS = {status_code} | Endereço IP: {client_ip} | Requisição rota '/'")
+    return response 
 
 app.include_router(admin.router)
 app.include_router(client.router)
