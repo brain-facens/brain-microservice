@@ -32,7 +32,7 @@ def demoLogin(username: str, password: str):
     result = session.execute(query, (username,))
     stored_password = result.one()
     if stored_password and password == stored_password.password:
-        return {"message": f"Demo {username} logged in successfully!"}
+        return {"message": f"User {username} logged in successfully!"}, HTTPException(status_code=status.HTTP_200_OK)
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
 
@@ -43,6 +43,6 @@ def adminLogin(username: str, password: str):
     result = session.execute(query, (username,))
     stored_password = result.one()
     if stored_password and password == stored_password.password:
-        return {"message": f"User {username} logged in sucessfully!"}
+        return {"message": f"User {username} logged in sucessfully!"}, HTTPException(status_code=status.HTTP_200_OK)
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")

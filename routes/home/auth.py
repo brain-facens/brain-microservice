@@ -30,16 +30,15 @@ async def client_login(model: client.LoginModel, request: Request):
     try:
         return(clientLogin(model.username, model.password))
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{str(e)}")
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=f"{str(e)}")
         
-    
 @router.post('/demo/login')
 @limiter.limit("5/minute")
 async def demo_login(model: demo.LoginModel, request: Request):
     try:
         return(demoLogin(model.username, model.password))
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{str(e)}")
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=f"{str(e)}")
     
 @router.post('/admin/login')
 @limiter.limit("5/minute")
@@ -47,4 +46,4 @@ async def admin_login(model: admin.LoginUser, request: Request):
     try:
         return(adminLogin(model.username, model.password))
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{str(e)}")
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=f"{str(e)}")
